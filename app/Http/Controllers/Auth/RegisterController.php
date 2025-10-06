@@ -11,7 +11,7 @@ class RegisterController extends Controller
 {
     public function showRegister()
     {
-        return view('components.pages.auth-pages.register');
+        return view('pages.register');
     }
 
     public function register(RegisterRequest $request, RegisterService $service)
@@ -23,13 +23,12 @@ class RegisterController extends Controller
 
             Auth::guard('author')->login($newAuthor);
 
-            return response()->json([
-                'success' => true,
-                'redirect' => route('show-blog'),
-            ]);
+            return response()->json(['redirect' => route('show-blog')]);
         } catch (\Exception $e) {
             return response()->json([
-                'error' => 'Sorry, something went wrong. Please try again later.',
+                'errors' => [
+                    'exception' => ['Sorry, something went wrong. Pleas try again later.'],
+                ],
             ]);
         }
     }

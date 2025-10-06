@@ -10,7 +10,7 @@ class LoginController extends Controller
 {
     public function showLogin()
     {
-        return view('components.pages.auth-pages.login');
+        return view('pages.login');
     }
 
     public function login(LoginRequest $request)
@@ -23,17 +23,21 @@ class LoginController extends Controller
 
                 return response()->json([
                     'success' => true,
-                    'redirect' => route('show-register'),
+                    'redirect' => route('show-blog'),
                 ]);
             }
 
             return response()->json([
                 'success' => false,
-                'error' => 'Invalid Credentials',
+                'errors' => [
+                    'credential' => ['You entered an incorrect credential, please try again.'],
+                ],
             ]);
         } catch (\Exception $e) {
             return response()->json([
-                'error' => 'Sorry, something went wrong. Please try again later.',
+                'errors' => [
+                    'exception' => ['Sorry, something went wrong. Pleas try again later.'],
+                ],
             ]);
         }
     }
