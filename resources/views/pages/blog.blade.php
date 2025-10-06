@@ -1,7 +1,11 @@
 @extends('layouts.app')
 
 @section('content')
-  <x-blog.create-blog />
+  <div class="overflow-auto vh-100">
+    <x-blog.create-blog />
+
+    <x-blog.public-feed :blogs="$blogs"/>
+  </div>
 @endsection
 
 @push('scripts')

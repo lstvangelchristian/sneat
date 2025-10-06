@@ -2,7 +2,7 @@
   CREATE BLOG
 </h5>
 
-<div class="shadow-sm border p-3 mt-3">
+<div class="shadow-sm border p-3">
   <form id="create-blog-form">
     <div class="d-flex justify-content-center">
       <div class="d-flex align-items-center justify-content-center bg-primary me-3" style="height: 50px; width: 50px; border-radius: 100%; ">

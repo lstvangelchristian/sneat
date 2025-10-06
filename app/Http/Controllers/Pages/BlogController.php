@@ -4,23 +4,32 @@ namespace App\Http\Controllers\Pages;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\BlogRequest;
-use App\Http\Services\CreateBlogService;
+use App\Http\Services\BlogService;
 
 class BlogController extends Controller
 {
-    public function showBlog()
+    protected $blogService;
+
+    public function __construct(BlogService $service)
     {
-        return view('pages.blog');
+        $this->blogService = $service;
     }
 
-    public function createBlog(BlogRequest $request, CreateBlogService $service)
+    public function showBlog()
+    {
+        $blogs = $this->blogService->getBlogs();
+
+        return view('pages.blog', ['blogs' => $blogs]);
+    }
+
+    public function createBlog(BlogRequest $request, BlogService $service)
     {
         try {
             $validated = $request->validated();
 
             $id = auth('author')->id();
 
-            $service->createBlog($validated, $id);
+            $this->blogService->createBlog($validated, $id);
 
             return response()->json(['success' => true]);
         } catch (\Exception $e) {

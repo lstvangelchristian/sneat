@@ -4,7 +4,7 @@ namespace App\Http\Services;
 
 use App\Models\Blog;
 
-class CreateBlogService
+class BlogService
 {
     public function createBlog(array $blog, string $authorId)
     {
@@ -12,5 +12,10 @@ class CreateBlogService
             'content' => $blog['content'],
             'author_id' => $authorId,
         ]);
+    }
+
+    public function getBlogs()
+    {
+        return Blog::with('reactions', 'comments')->latest()->get();
     }
 }
