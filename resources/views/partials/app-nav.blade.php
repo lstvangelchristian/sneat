@@ -27,24 +27,22 @@
 
 <div class="my-5">
   <div class="mt-5">
-    <x-reusable.a href="{{ route('show-blog') }}">
+    <x-a href="{{ route('show-blog') }}">
       Blogs
-    </x-reusable.a>
+    </x-a>
   </div>
 
   <div class="mt-5">
-    <x-reusable.a href="#">
+    <x-a href="#">
       Account Management
-    </x-reusable.a>
+    </x-a>
   </div>
 </div>
 
 <div class="flex-grow-1"></div>
 
 <form id="logout-form" class="mb-3">
-  <x-reusable.save-button>
+  <x-save-button>
     Logout
-  </x-reusable.save-button>
+  </x-save-button>
 </form>
-
-<x-partials.partials-script.app-nav-script />

@@ -9,13 +9,13 @@
 
   <div>
     <div class="text-end">
-      <x-reusable.a href="{{ route('show-login') }}">
+      <x-a href="{{ route('show-login') }}">
         Login
-      </x-reusable.a>
+      </x-a>
 
-      <x-reusable.a href="{{ route('show-register') }}">
+      <x-a href="{{ route('show-register') }}">
         Register
-      </x-reusable.a>
+      </x-a>
     </div>
   </div>
 </div>

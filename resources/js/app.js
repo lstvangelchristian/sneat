@@ -16,5 +16,9 @@ import '../assets/vendor/js/menu.js';
 
 import './utils/csrf.js';
 
+import './utils/logout.js';
+
 import Swal from 'sweetalert2';
 window.Swal = Swal;
+
+import './utils/sweetalert2.js';

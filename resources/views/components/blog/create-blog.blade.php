@@ -10,15 +10,13 @@
           {{ strtoupper(substr(Auth::guard('author')->user()->username, 0, 1)) }}
         </h5>
       </div>
-      <textarea class="form-control" id="blog-content" name="blog-content" rows="1" placeholder="What's on your mind?" style="resize: none;"></textarea>
+      <textarea class="form-control create-blog-field" name="blog-content" rows="1" placeholder="What's on your mind?" style="resize: none;"></textarea>
     </div>
 
     <div class="text-end mt-3">
-      <x-reusable.save-button>
+      <x-save-button>
         Post
-      </x-reusable.save-button>
+      </x-save-button>
     </div>
   </form>
 </div>
-
-<x-pages.blog-pages.blog-sub-pages-script.create-blog-script />

@@ -10,7 +10,7 @@ class BlogController extends Controller
 {
     public function showBlog()
     {
-        return view('components.pages.blog-pages.blog');
+        return view('pages.blog');
     }
 
     public function createBlog(BlogRequest $request, CreateBlogService $service)
@@ -24,7 +24,10 @@ class BlogController extends Controller
 
             return response()->json(['success' => true]);
         } catch (\Exception $e) {
-            return response()->json(['error' => 'Sorry, something went wrong. Please try again later.']);
+            return response()->json([
+                'errors' => [
+                    'exception' => ['Sorry, something went wrong. Please try again later.']],
+            ]);
         }
     }
 }

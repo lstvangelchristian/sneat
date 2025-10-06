@@ -6,7 +6,7 @@
   </h4>
 
   <form id="registration-form" method="post">
-    <x-reusable.input
+    <x-input
       type="text"
       name="username"
       floatingInput="username"
@@ -16,7 +16,7 @@
 
     <div class="username-error error"></div>
 
-    <x-reusable.input
+    <x-input
       type="password"
       name="password"
       floatingInput="password"
@@ -26,7 +26,7 @@
 
     <div class="password-error error"></div>
 
-    <x-reusable.input
+    <x-input
       type="password"
       name="confirm-password"
       floatingInput="confirm-password"
@@ -39,15 +39,15 @@
     <div class="exception-error error"></div>
 
     <div class="mb-3">
-        <x-reusable.save-button>
+        <x-save-button>
           Register
-        </x-reusable.save-button>
+        </x-save-button>
     </div>
 
     <div class="text-center">
-      <x-reusable.a href="{{ route('show-login') }}">
+      <x-a href="{{ route('show-login') }}">
         Already have an account?
-      </x-reusable.a>
+      </x-a>
     </div>
   </form>
 @endsection
