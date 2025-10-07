@@ -93,4 +93,51 @@ export class BlogModel {
       });
     });
   }
+
+  async getCreateCommentContent(id) {
+    return new Promise((resolve, reject) => {
+      $.ajax({
+        url: `comment/create/modal/${id}`,
+        method: 'GET',
+        success: function (response) {
+          resolve(response);
+        },
+        error: function (xhr) {
+          reject(xhr);
+        }
+      });
+    });
+  }
+
+  async createComment(commentData) {
+    return new Promise((resolve, reject) => {
+      $.ajax({
+        url: `comment`,
+        method: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify(commentData),
+        success: function (response) {
+          resolve(response);
+        },
+        error: function (xhr) {
+          reject(xhr);
+        }
+      });
+    });
+  }
+
+  async renderComments(id) {
+    return new Promise((resolve, reject) => {
+      $.ajax({
+        url: `comment/${id}`,
+        method: 'GET',
+        success: function (response) {
+          resolve(response);
+        },
+        error: function (xhr) {
+          reject(xhr);
+        }
+      });
+    });
+  }
 }

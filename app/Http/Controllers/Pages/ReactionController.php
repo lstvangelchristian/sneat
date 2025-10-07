@@ -33,7 +33,7 @@ class ReactionController extends Controller
             return response()->json([
                 'errors' => [
                     'exception' => ['Sorry, something went wrong. Please try again later.'],
-                    'message' => [$e]],
+                ],
             ]);
         }
     }

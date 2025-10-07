@@ -40,13 +40,12 @@ export class BlogContr {
       try {
         await this.model.updateBlog(data);
 
+        await this.view.hideModal('#updateBlogModal');
         this.showResult({
           title: 'Your blog has been posted successfully',
           text: 'Click the button to close',
           icon: 'success'
         });
-
-        console.log('success');
       } catch (errors) {
         console.log(errors);
         this.showResult({
@@ -87,6 +86,40 @@ export class BlogContr {
         await this.view.renderReactionModal(result);
       } catch (error) {
         console.log(error);
+      }
+    });
+
+    await this.view.getCreateCommentContent(async comment => {
+      if (comment.isClicked) {
+        try {
+          const content = await this.model.getCreateCommentContent(comment.blogId);
+          await this.view.renderCreateCommentContent(content);
+        } catch (e) {
+          console.log(e);
+        }
+      }
+    });
+
+    await this.view.createComment(async commentData => {
+      try {
+        const res = await this.model.createComment(commentData);
+        await this.view.hideModal('#createCommentModal');
+        this.showResult({
+          title: 'Your blog has been posted successfully',
+          text: 'Click the button to close',
+          icon: 'success'
+        });
+      } catch (error) {
+        console.log(res);
+      }
+    });
+
+    await this.view.showComments(async blogId => {
+      try {
+        const result = await this.model.renderComments(blogId);
+        await this.view.renderCommentContent(result);
+      } catch (e) {
+        console.log(e);
       }
     });
   }

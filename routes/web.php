@@ -4,6 +4,7 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\LogoutController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Pages\BlogController;
+use App\Http\Controllers\Pages\CommentController;
 use App\Http\Controllers\Pages\ReactionController;
 use Illuminate\Support\Facades\Route;
 
@@ -30,4 +31,10 @@ Route::middleware('auth')->controller(BlogController::class)->group(function () 
 Route::middleware('auth')->controller(ReactionController::class)->group(function () {
     Route::post('/reaction', 'createReaction')->name('create-reaction');
     Route::get('/reaction/{id}', 'getReactionsByBlogId')->name('get-reactions');
+});
+
+Route::middleware('auth')->controller(CommentController::class)->group(function () {
+    Route::get('/comment/create/modal/{id}', 'renderCreateCommentModal')->name('render-create-comment-modal');
+    Route::post('/comment', 'createComment')->name('create-comment');
+    Route::get('/comment/{id}', 'renderComments')->name('render-comments');
 });

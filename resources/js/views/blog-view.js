@@ -130,4 +130,59 @@ export class BlogView {
       $(this).remove();
     });
   }
+
+  async getCreateCommentContent(callback) {
+    $(document).on('click', '.comment-btn', e => {
+      const blogId = $(e.currentTarget).data('blogId');
+
+      callback({ isClicked: true, blogId });
+    });
+  }
+
+  async renderCreateCommentContent(content) {
+    $('body').append(content);
+
+    $('#createCommentModal').modal('show');
+
+    $('#createCommentModal').on('hidden.bs.modal', function () {
+      $(this).remove();
+    });
+  }
+
+  async createComment(callback) {
+    $(document).on('submit', '#createCommentForm', e => {
+      e.preventDefault();
+
+      const commentFormData = new FormData(e.currentTarget);
+
+      const commentData = {
+        blogId: commentFormData.get('blog-id'),
+        content: commentFormData.get('content')
+      };
+
+      callback(commentData);
+    });
+  }
+
+  async showComments(callback) {
+    $(document).on('click', '.show-comments', e => {
+      const blog_id = $(e.currentTarget).closest('.show-comments').data('blogId');
+
+      callback(blog_id);
+    });
+  }
+
+  async renderCommentContent(content) {
+    $('body').append(content);
+
+    $('#getCommentsModal').modal('show');
+
+    $('#getCommentsModal').on('hidden.bs.modal', function () {
+      $(this).remove();
+    });
+  }
+
+  async hideModal(modalId) {
+    $(`${modalId}`).modal('hide');
+  }
 }

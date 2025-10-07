@@ -19,6 +19,10 @@ class BlogController extends Controller
     {
         $blogs = $this->blogService->getBlogs();
 
+        if (request()->ajax()) {
+            return view('components.blog.get-blogs', ['blogs' => $blogs]);
+        }
+
         return view('pages.blog', ['blogs' => $blogs]);
     }
 
