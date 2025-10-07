@@ -18,4 +18,16 @@ class BlogService
     {
         return Blog::with('reactions', 'comments')->latest()->get();
     }
+
+    public function getBlog(string $blogId)
+    {
+        return Blog::findOrFail($blogId);
+    }
+
+    public function updateBlog(array $data, string $id)
+    {
+        $blog = Blog::findOrFail($id);
+
+        return $blog->update($data);
+    }
 }

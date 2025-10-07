@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Pages;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\BlogRequest;
 use App\Http\Services\BlogService;
+use Illuminate\Http\Request;
 
 class BlogController extends Controller
 {
@@ -38,5 +39,23 @@ class BlogController extends Controller
                     'exception' => ['Sorry, something went wrong. Please try again later.']],
             ]);
         }
+    }
+
+    public function renderUpdateModal(string $id)
+    {
+        $blog = $this->blogService->getBlog($id);
+
+        return view('components.blog.update-blog', ['blog' => $blog]);
+    }
+
+    public function updateBlog(Request $request, string $id)
+    {
+        $validated = $request->validate(['updatedContent' => 'required']);
+
+        $new = ['content' => $validated['updatedContent']];
+
+        $result = $this->blogService->updateBlog($new, $id);
+
+        return $result;
     }
 }

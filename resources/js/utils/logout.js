@@ -2,8 +2,6 @@ $(() => {
   const $logoutForm = $('#logout-form');
 
   if ($logoutForm) {
-    console.log($logoutForm);
-
     $logoutForm.on('submit', e => {
       e.preventDefault();
 

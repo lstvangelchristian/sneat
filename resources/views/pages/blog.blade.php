@@ -4,7 +4,7 @@
   <div class="overflow-auto vh-100">
     <x-blog.create-blog />
 
-    <x-blog.public-feed :blogs="$blogs"/>
+    <x-blog.get-blogs :blogs="$blogs"/>
   </div>
 @endsection
 

@@ -10,7 +10,7 @@
           {{ strtoupper(substr(Auth::guard('author')->user()->username, 0, 1)) }}
         </h5>
       </div>
-      <textarea class="form-control create-blog-field" name="blog-content" rows="1" placeholder="What's on your mind?" style="resize: none;"></textarea>
+      <textarea class="form-control create-blog-field" name="blog-content" rows="1" placeholder="What's on your mind?" b></textarea>
     </div>
 
     <div class="text-end mt-3">

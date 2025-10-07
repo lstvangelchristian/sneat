@@ -21,4 +21,6 @@ Route::post('/logout', [LogoutController::class, 'logout'])->name('logout');
 Route::middleware('auth')->controller(BlogController::class)->group(function () {
     Route::get('/blog', 'showBlog')->name('show-blog');
     Route::post('/blog', 'createBlog')->name('create-blog');
+    Route::get('/blog/update/{id}', 'renderUpdateModal')->name('render-update-modal');
+    Route::put('/blog/update/{id}', 'updateBlog')->name('update-blog');
 });

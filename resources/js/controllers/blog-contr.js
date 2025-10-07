@@ -25,5 +25,23 @@ export class BlogContr {
         });
       }
     });
+
+    await this.view.getBlogId(async data => {
+      try {
+        const result = await this.model.renderUpdateModal(data.blogId);
+        await this.view.renderModal(result);
+      } catch (error) {
+        console.log(error);
+      }
+    });
+
+    await this.view.updateBlog(async data => {
+      try {
+        const result = await this.model.updateBlog(data);
+        console.log(result);
+      } catch (error) {
+        console.log(error);
+      }
+    });
   }
 }

@@ -12,8 +12,8 @@
             <div class="dropdown">
               <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown"><i class="icon-base bx bx-dots-vertical-rounded"></i></button>
               <div class="dropdown-menu">
-                <a class="dropdown-item" href="javascript:void(0);"><i class="icon-base bx bx-edit-alt me-1"></i>Edit</a>
-                <a class="dropdown-item" href="javascript:void(0);"><i class="icon-base bx bx-trash me-1"></i>Delete</a>
+                <a class="dropdown-item js-edit-blog" data-blog-id="{{ $blog->id }}" data-blog-action="edit" href="javascript:void(0);"><i class="icon-base bx bx-edit-alt me-1"></i>Edit</a>
+                <a class="dropdown-item js-delete-blog" data-blog-id="{{ $blog->id }}" data-blog-action="delete" href="javascript:void(0);"><i class="icon-base bx bx-trash me-1"></i>Delete</a>
               </div>
             </div>
           </div>
@@ -46,7 +46,7 @@
 
         </div>
 
-        <div class="shadow-sm p-3 mt-3" style="border: 1px solid lightgray;">
+        <div class="shadow-sm p-3 mt-3 js-blog-content-container-{{ $blog->id }}" style="border: 1px solid lightgray;">
           {{ $blog->content }}
         </div>
 

@@ -40,4 +40,35 @@ export class BlogView {
       });
     });
   }
+
+  async getBlogId(callback) {
+    $(document).on('click', '.js-edit-blog, .js-delete-blog', async e => {
+      const blogId = $(e.currentTarget).data('blogId');
+      const action = $(e.currentTarget).data('blogAction');
+      callback({ blogId, action });
+    });
+  }
+
+  async renderModal(content) {
+    $('body').append(content);
+
+    $('#updateBlogModal').modal('show');
+
+    $('#updateBlogModal').on('hidden.bs.modal', function () {
+      $(this).remove();
+    });
+  }
+
+  async updateBlog(callback) {
+    $(document).on('submit', '#updateBlogForm', function (e) {
+      e.preventDefault();
+
+      const updateBlogFormData = new FormData(e.currentTarget);
+
+      const blogId = updateBlogFormData.get('blog-id');
+      const updatedContent = updateBlogFormData.get('updated-content');
+
+      callback({ blogId, data: { updatedContent } });
+    });
+  }
 }
