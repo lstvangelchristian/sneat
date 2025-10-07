@@ -15,9 +15,19 @@ class BlogRequest extends FormRequest
 
     public function rules(): array
     {
-        return [
-            'content' => 'required|min:10',
-        ];
+        if ($this->isMethod('post')) {
+            return [
+                'content' => 'required|min:10',
+            ];
+        }
+
+        if ($this->isMethod('put')) {
+            return [
+                'updatedContent' => 'required|min:10',
+            ];
+        }
+
+        return [];
     }
 
     public function messages()
@@ -25,6 +35,8 @@ class BlogRequest extends FormRequest
         return [
             'content.required' => 'You must write something',
             'content.min' => 'Content must be at least 10 characters',
+            'updatedContent.required' => 'You must write something',
+            'updatedContent.min' => 'Content must be at least 10 characters',
         ];
     }
 

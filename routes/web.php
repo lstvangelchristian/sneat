@@ -4,6 +4,7 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\LogoutController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Pages\BlogController;
+use App\Http\Controllers\Pages\ReactionController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware('guest')->controller(RegisterController::class)->group(function () {
@@ -23,4 +24,10 @@ Route::middleware('auth')->controller(BlogController::class)->group(function () 
     Route::post('/blog', 'createBlog')->name('create-blog');
     Route::get('/blog/update/{id}', 'renderUpdateModal')->name('render-update-modal');
     Route::put('/blog/update/{id}', 'updateBlog')->name('update-blog');
+    Route::delete('/blog/delete/{id}', 'deleteBlog')->name('delete-blog');
+});
+
+Route::middleware('auth')->controller(ReactionController::class)->group(function () {
+    Route::post('/reaction', 'createReaction')->name('create-reaction');
+    Route::get('/reaction/{id}', 'getReactionsByBlogId')->name('get-reactions');
 });

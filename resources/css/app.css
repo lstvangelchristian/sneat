@@ -2,3 +2,5 @@
 @import '/resources/assets/vendor/scss/core.scss';
 @import '/resources/assets/vendor/scss/theme-default.scss';
 @import '/resources/assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.scss';
+
+@import 'swal.css';

@@ -30,4 +30,11 @@ class BlogService
 
         return $blog->update($data);
     }
+
+    public function deleteBlog(string $id)
+    {
+        $blog = Blog::findOrFail($id);
+
+        return $blog->delete($blog);
+    }
 }

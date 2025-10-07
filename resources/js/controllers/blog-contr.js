@@ -1,8 +1,9 @@
 export class BlogContr {
-  constructor(model, view, showResult) {
+  constructor(model, view, showResult, confirmDeletion) {
     this.model = model;
     this.view = view;
     this.showResult = showResult;
+    this.confirmDeletion = confirmDeletion;
   }
 
   async init() {
@@ -37,8 +38,53 @@ export class BlogContr {
 
     await this.view.updateBlog(async data => {
       try {
-        const result = await this.model.updateBlog(data);
+        await this.model.updateBlog(data);
+
+        this.showResult({
+          title: 'Your blog has been posted successfully',
+          text: 'Click the button to close',
+          icon: 'success'
+        });
+
+        console.log('success');
+      } catch (errors) {
+        console.log(errors);
+        this.showResult({
+          title: errors.updatedContent[0] || errors.exception[0],
+          text: 'Click the button to close',
+          icon: 'error'
+        });
+      }
+    });
+
+    await this.view.deleteBlog(async deleteData => {
+      if (deleteData.isClicked) {
+        this.confirmDeletion({
+          title: 'blog',
+          onConfirmDelete: async () => {
+            try {
+              await this.model.deleteBlog(deleteData.blogId);
+            } catch (errors) {
+              return;
+            }
+          }
+        });
+      }
+    });
+
+    await this.view.createReact(async reactionData => {
+      try {
+        const result = await this.model.createReaction(reactionData);
         console.log(result);
+      } catch (error) {
+        console.log(error);
+      }
+    });
+
+    await this.view.showReaction(async id => {
+      try {
+        const result = await this.model.getReactions(id);
+        await this.view.renderReactionModal(result);
       } catch (error) {
         console.log(error);
       }

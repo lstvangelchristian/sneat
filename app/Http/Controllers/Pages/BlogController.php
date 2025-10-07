@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Pages;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\BlogRequest;
 use App\Http\Services\BlogService;
-use Illuminate\Http\Request;
 
 class BlogController extends Controller
 {
@@ -48,14 +47,28 @@ class BlogController extends Controller
         return view('components.blog.update-blog', ['blog' => $blog]);
     }
 
-    public function updateBlog(Request $request, string $id)
+    public function updateBlog(BlogRequest $request, string $id)
     {
-        $validated = $request->validate(['updatedContent' => 'required']);
+        try {
+            $validated = $request->validated();
 
-        $new = ['content' => $validated['updatedContent']];
+            $new = ['content' => $validated['updatedContent']];
 
-        $result = $this->blogService->updateBlog($new, $id);
+            $result = $this->blogService->updateBlog($new, $id);
 
-        return $result;
+            return response()->json(['success' => true]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'errors' => [
+                    'exception' => ['Sorry, something went wrong. Please try again later.']],
+            ]);
+        }
+    }
+
+    public function deleteBlog(string $id)
+    {
+        $result = $this->blogService->deleteBlog($id);
+
+        return response()->json(['success' => true]);
     }
 }

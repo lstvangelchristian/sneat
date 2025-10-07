@@ -6,15 +6,8 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
 
-      <form id="{{ $formId }}" method="post">
-        <div class="modal-body">
-          {{ $slot }}
-        </div>
+        {{ $slot }}
 
-        <div class="modal-footer">
-          {{ $footer }}
-        </div>
-      </form>
     </div>
   </div>
 </div>
