@@ -1,4 +1,21 @@
 export class BlogModel {
+  async #request(url = '', method = 'GET', data = undefined) {
+    return new Promise((resolve, reject) => {
+      $.ajax({
+        url: url,
+        method: method,
+        contentType: 'application/json',
+        data: data,
+        success: response => {
+          return response;
+        },
+        error: xhr => {
+          return xhr;
+        }
+      });
+    });
+  }
+
   async createBlog(newBlog) {
     return new Promise((resolve, reject) => {
       $.ajax({
