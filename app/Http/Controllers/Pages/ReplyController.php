@@ -40,4 +40,39 @@ class ReplyController extends Controller
             'newReply' => $result,
         ]);
     }
+
+    public function getReply(string $replyId)
+    {
+        $reply = Reply::findOrFail($replyId);
+
+        return response()->json([
+            'view' => view('components.reply.update-reply', ['reply' => $reply])->render(),
+            'replyId' => $replyId,
+        ]);
+    }
+
+    public function updateReply(Request $request)
+    {
+        $validated = $request->validate([
+            'replyId' => 'required|integer',
+            'updatedReply' => 'required',
+        ]);
+
+        $replyToBeUpdated = Reply::findOrFail($validated['replyId']);
+
+        $newReply = ['content' => $validated['updatedReply']];
+
+        $replyToBeUpdated->update($newReply);
+
+        return response()->json(['success' => true]);
+    }
+
+    public function deleteReply(string $id)
+    {
+        $reply = Reply::findOrFail($id);
+
+        $reply->delete();
+
+        return response()->json(['success' => true]);
+    }
 }

@@ -249,4 +249,51 @@ export class BlogModel {
       });
     });
   }
+
+  async getReply(replyId) {
+    return new Promise((resolve, reject) => {
+      $.ajax({
+        url: `reply/${replyId}`,
+        method: 'GET',
+        success: function (response) {
+          resolve(response);
+        },
+        error: function (xhr) {
+          reject(xhr);
+        }
+      });
+    });
+  }
+
+  async updateReply(replyData) {
+    return new Promise((resolve, reject) => {
+      $.ajax({
+        url: `reply`,
+        method: 'PUT',
+        contentType: 'application/json',
+        data: JSON.stringify(replyData),
+        success: function (response) {
+          resolve(response);
+        },
+        error: function (xhr) {
+          reject(xhr);
+        }
+      });
+    });
+  }
+
+  async deleteReply(replyId) {
+    return new Promise((resolve, reject) => {
+      $.ajax({
+        url: `reply/${replyId}`,
+        method: 'DELETE',
+        success: function (response) {
+          resolve(response);
+        },
+        error: function (xhr) {
+          reject(xhr);
+        }
+      });
+    });
+  }
 }

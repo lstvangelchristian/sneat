@@ -282,5 +282,49 @@ export class BlogView {
     });
   }
 
-  async;
+  async retrieveReplyData(retrieveData) {
+    $(document).on('click', '.js-edit-reply', async e => {
+      const replyId = $(e.currentTarget).data('reply-id');
+      const commentId = $(e.currentTarget).data('comment-id');
+
+      retrieveData({ replyId, commentId });
+    });
+  }
+
+  async makeReplyContentEditable(result) {
+    console.log(result);
+    const replyContainer = $(`.reply-content-container-${result.replyId}`);
+    replyContainer.empty();
+    replyContainer.html(result.view);
+  }
+
+  async cancelEditReply(callback) {
+    $(document).on('click', '.js-cancel-reply', async e => {
+      const commentId = $(e.currentTarget).data('commentId');
+      await callback(commentId);
+    });
+  }
+
+  async updateReply(callback) {
+    $(document).on('submit', '#updateReplyForm', async e => {
+      e.preventDefault();
+
+      const updateReplyForm = new FormData(e.currentTarget);
+
+      const replyId = updateReplyForm.get('reply-id');
+      const commentId = updateReplyForm.get('comment-id');
+      const updatedReply = updateReplyForm.get('updated-reply');
+
+      await callback({ replyId, updatedReply }, commentId);
+    });
+  }
+
+  async deleteReply(callback) {
+    $(document).on('click', '.js-delete-reply', async e => {
+      const replyId = $(e.currentTarget).data('reply-id');
+      const commentId = $(e.currentTarget).data('comment-id');
+
+      await callback({ replyId, commentId });
+    });
+  }
 }

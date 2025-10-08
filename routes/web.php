@@ -47,4 +47,7 @@ Route::middleware('auth')->controller(CommentController::class)->group(function 
 Route::middleware('auth')->controller(ReplyController::class)->group(function () {
     Route::get('/replies/{id}', 'getReplies');
     Route::post('/replies', 'createReply');
+    Route::get('/reply/{id}', 'getReply');
+    Route::put('/reply', 'updateReply');
+    Route::delete('/reply/{id}', 'deleteReply');
 });

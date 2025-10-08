@@ -6,7 +6,7 @@
     @if ($replies->count() === 0)
       <p class="text-center m-0">No Replies Yet</p>
     @else
-    <div class="overflow-auto" style="height: 200px;">
+    <div class="overflow-auto" style="height: 400px;">
       @foreach ($replies as $reply)
           <div class="shadow-sm border p-3 mb-3">
 
@@ -16,6 +16,7 @@
                   <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown"><i class="icon-base bx bx-dots-vertical-rounded"></i></button>
                   <div class="dropdown-menu">
                     <a class="dropdown-item js-edit-reply" data-reply-id="{{ $reply->id }}" data-comment-id="{{ $reply->comment_id }}" href="javascript:void(0);"><i class="icon-base bx bx-edit-alt me-1"></i>Edit</a>
+
                     <a class="dropdown-item js-delete-reply" data-reply-id="{{ $reply->id }}" data-comment-id="{{ $reply->comment_id }}" href="javascript:void(0);"><i class="icon-base bx bx-trash me-1"></i>Delete</a>
                   </div>
                 </div>
@@ -32,7 +33,7 @@
               </div>
             </div>
 
-            <div class="shadow-sm border p-3">
+            <div class="shadow-sm border p-3 reply-content-container-{{ $reply->id }}">
               <p class="m-0">{{$reply->content}}</p>
             </div>
           </div>

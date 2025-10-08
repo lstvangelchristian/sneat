@@ -211,5 +211,59 @@ export class BlogContr {
         console.log(e);
       }
     });
+
+    await this.view.retrieveReplyData(async replyData => {
+      try {
+        const res = await this.model.getReply(replyData.replyId);
+        await this.view.makeReplyContentEditable(res);
+      } catch (e) {
+        console.log(e);
+        console.log('haserrors');
+      }
+    });
+
+    await this.view.cancelEditReply(async commentId => {
+      try {
+        if (commentId) {
+          const updatedReplies = await this.model.getReplies(commentId);
+          await this.view.renderReplies(updatedReplies);
+        }
+      } catch (e) {
+        console.log(e);
+      }
+    });
+
+    await this.view.updateReply(async (updateReplyData, commentId) => {
+      try {
+        const result = await this.model.updateReply(updateReplyData);
+        console.log(result);
+        const updatedReplies = await this.model.getReplies(commentId);
+        await this.view.renderReplies(updatedReplies);
+      } catch (e) {
+        console.log(e);
+      }
+    });
+
+    await this.view.deleteReply(async deleteData => {
+      if (deleteData) {
+        this.confirmDeletion({
+          title: 'reply',
+          onConfirmDelete: async () => {
+            try {
+              const res = await this.model.deleteReply(deleteData.replyId);
+
+              const updatedReplies = await this.model.getReplies(deleteData.commentId);
+              await this.view.renderReplies(updatedReplies);
+
+              const updatedContent = await this.model.renderBlogs();
+              await this.view.renderBlogs(updatedContent);
+            } catch (errors) {
+              console.log(errors);
+              return;
+            }
+          }
+        });
+      }
+    });
   }
 }
