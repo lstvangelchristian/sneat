@@ -8,7 +8,7 @@
           <div class="dropdown">
             <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown"><i class="icon-base bx bx-dots-vertical-rounded"></i></button>
             <div class="dropdown-menu">
-              <a class="dropdown-item js-edit-comment" data-comment-content="{{ $comment->content }}" data-comment-id="{{ $comment->id }}" data-blog-action="edit" href="javascript:void(0);"><i class="icon-base bx bx-edit-alt me-1"></i>Edit</a>
+              <a class="dropdown-item js-edit-comment" data-blog-id="{{ $comment->blog_id }}" data-comment-id="{{ $comment->id }}" href="javascript:void(0);"><i class="icon-base bx bx-edit-alt me-1"></i>Edit</a>
               <a class="dropdown-item js-delete-comment" data-comment-id="{{ $comment->id }}" data-blog-id="{{ $comment->blog_id }}" href="javascript:void(0);"><i class="icon-base bx bx-trash me-1"></i>Delete</a>
             </div>
           </div>
@@ -25,11 +25,18 @@
           {{ $comment->created_at }}
         </div>
       </div>
+
       <div class="shadow-sm border p-3 js-comment-{{ $comment->id }}">
         {{ $comment->content }}
       </div>
 
-      {{-- Reply Section Here --}}
+      <div class="d-flex mt-3">
+        <p class="m-0 js-show-replies text-primary" style="cursor: pointer;" data-comment-id="{{ $comment->id }}">Replies: {{ $comment->replies->count() }}</p>
+      </div>
+
+      <div class="js-replies-container-{{ $comment->id }}">
+
+      </div>
     </div>
   @endforeach
 @endif
