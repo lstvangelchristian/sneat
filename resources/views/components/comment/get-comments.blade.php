@@ -15,8 +15,8 @@
               <div class="dropdown">
                 <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown"><i class="icon-base bx bx-dots-vertical-rounded"></i></button>
                 <div class="dropdown-menu">
-                  <a class="dropdown-item js-edit-comment" data-blog-id="{{ $comment->blog_id }}" data-comment-id="{{ $comment->id }}" data-blog-action="edit" href="javascript:void(0);"><i class="icon-base bx bx-edit-alt me-1"></i>Edit</a>
-                  <a class="dropdown-item js-delete-comment" data-comment-id="{{ $comment->id }}" data-blog-action="delete" href="javascript:void(0);"><i class="icon-base bx bx-trash me-1"></i>Delete</a>
+                  <a class="dropdown-item js-edit-comment" data-blog-id="{{ $comment->blog_id }}" data-comment-id="{{ $comment->id }}" href="javascript:void(0);"><i class="icon-base bx bx-edit-alt me-1"></i>Edit</a>
+                  <a class="dropdown-item js-delete-comment" data-comment-id="{{ $comment->id }}" data-blog-id="{{ $comment->blog_id }}" href="javascript:void(0);"><i class="icon-base bx bx-trash me-1"></i>Delete</a>
                 </div>
               </div>
             </div>

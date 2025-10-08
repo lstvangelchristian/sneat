@@ -167,5 +167,23 @@ export class BlogContr {
         console.log(e);
       }
     });
+
+    await this.view.showDeleteConfirmation(async retrieveId => {
+      if (retrieveId) {
+        this.confirmDeletion({
+          title: 'comment',
+          onConfirmDelete: async () => {
+            try {
+              await this.model.deleteComment(retrieveId.commentId);
+
+              const content = await this.model.loadComments(retrieveId.blogId);
+              await this.view.loadComments(content);
+            } catch (errors) {
+              return;
+            }
+          }
+        });
+      }
+    });
   }
 }

@@ -202,4 +202,19 @@ export class BlogModel {
       });
     });
   }
+
+  async deleteComment(commentId) {
+    return new Promise((resolve, reject) => {
+      $.ajax({
+        url: `comment/${commentId}`,
+        method: 'DELETE',
+        success: function (response) {
+          resolve(response);
+        },
+        error: function (xhr) {
+          reject(xhr);
+        }
+      });
+    });
+  }
 }

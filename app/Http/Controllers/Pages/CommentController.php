@@ -78,4 +78,15 @@ class CommentController extends Controller
 
         return response()->json(['success' => true]);
     }
+
+    public function deleteComment(string $id)
+    {
+        $commentToBeDeleted = Comment::findOrFail($id);
+
+        $res = $commentToBeDeleted->delete();
+
+        return response()->json([
+            'success' => true,
+      ]);
+    }
 }

@@ -40,4 +40,5 @@ Route::middleware('auth')->controller(CommentController::class)->group(function 
     Route::get('/comment/edit/{id}', 'getComment')->name('get-comment');
     Route::get('/comment/load/{id}', 'loadComments');
     Route::put('/comment', 'updateComment');
+    Route::delete('/comment/{id}', 'deleteComment');
 });

@@ -233,4 +233,12 @@ export class BlogView {
   async hideModal(modalId) {
     $(`${modalId}`).modal('hide');
   }
+
+  async showDeleteConfirmation(retrieveId) {
+    $(document).on('click', '.js-delete-comment', e => {
+      const commentId = $(e.currentTarget).data('commentId');
+      const blogId = $(e.currentTarget).data('blogId');
+      retrieveId({ commentId, blogId });
+    });
+  }
 }
