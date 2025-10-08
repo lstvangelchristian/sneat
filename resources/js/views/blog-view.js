@@ -327,4 +327,16 @@ export class BlogView {
       await callback({ replyId, commentId });
     });
   }
+
+  async updateRepliesCount(isDelete) {
+    const html = $('.js-replies-count').text();
+    const currentCount = html.slice(9);
+
+    if (isDelete) {
+      $('.js-replies-count').text(`Replies: ${Number(currentCount) - 1}`);
+      return;
+    }
+
+    $('.js-replies-count').text(`Replies: ${Number(currentCount) + 1}`);
+  }
 }

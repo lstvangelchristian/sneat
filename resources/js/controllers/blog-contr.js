@@ -207,6 +207,8 @@ export class BlogContr {
 
         const updatedReplies = await this.model.getReplies(retrieveNewReply.commentId);
         await this.view.renderReplies(updatedReplies);
+
+        await this.view.updateRepliesCount(false);
       } catch (e) {
         console.log(e);
       }
@@ -254,6 +256,8 @@ export class BlogContr {
 
               const updatedReplies = await this.model.getReplies(deleteData.commentId);
               await this.view.renderReplies(updatedReplies);
+
+              await this.view.updateRepliesCount(true);
             } catch (errors) {
               console.log(errors);
               return;

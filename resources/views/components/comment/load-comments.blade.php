@@ -31,7 +31,7 @@
       </div>
 
       <div class="d-flex mt-3">
-        <p class="m-0 js-show-replies text-primary" style="cursor: pointer;" data-comment-id="{{ $comment->id }}">Replies: {{ $comment->replies->count() }}</p>
+        <p class="m-0 js-show-replies js-replies-count text-primary" style="cursor: pointer;" data-comment-id="{{ $comment->id }}">Replies: {{ $comment->replies->count() }}</p>
       </div>
 
       <div class="js-replies-container-{{ $comment->id }}">
