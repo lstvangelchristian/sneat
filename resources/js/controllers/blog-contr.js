@@ -13,6 +13,9 @@ export class BlogContr {
       try {
         await this.model.createBlog(newBlog);
 
+        const updatedContent = await this.model.renderBlogs();
+        await this.view.renderBlogs(updatedContent);
+
         this.showResult({
           title: 'Your blog has been posted successfully',
           text: 'Click the button to close',
@@ -40,7 +43,11 @@ export class BlogContr {
       try {
         await this.model.updateBlog(data);
 
+        const updatedContent = await this.model.renderBlogs();
+        await this.view.renderBlogs(updatedContent);
+
         await this.view.hideModal('#updateBlogModal');
+
         this.showResult({
           title: 'Your blog has been posted successfully',
           text: 'Click the button to close',
@@ -63,6 +70,8 @@ export class BlogContr {
           onConfirmDelete: async () => {
             try {
               await this.model.deleteBlog(deleteData.blogId);
+              const updatedContent = await this.model.renderBlogs();
+              await this.view.renderBlogs(updatedContent);
             } catch (errors) {
               return;
             }
@@ -73,8 +82,9 @@ export class BlogContr {
 
     await this.view.createReact(async reactionData => {
       try {
-        const result = await this.model.createReaction(reactionData);
-        console.log(result);
+        await this.model.createReaction(reactionData);
+        const updatedContent = await this.model.renderBlogs();
+        await this.view.renderBlogs(updatedContent);
       } catch (error) {
         console.log(error);
       }
@@ -104,8 +114,11 @@ export class BlogContr {
       try {
         const res = await this.model.createComment(commentData);
         await this.view.hideModal('#createCommentModal');
+        const updatedContent = await this.model.renderBlogs();
+        await this.view.renderBlogs(updatedContent);
+
         this.showResult({
-          title: 'Your blog has been posted successfully',
+          title: 'Your comment has been submitted successfully',
           text: 'Click the button to close',
           icon: 'success'
         });
@@ -118,6 +131,38 @@ export class BlogContr {
       try {
         const result = await this.model.renderComments(blogId);
         await this.view.renderCommentContent(result);
+      } catch (e) {
+        console.log(e);
+      }
+    });
+
+    await this.view.editComment(async editData => {
+      try {
+        const result = await this.model.getComment(editData.commentId);
+        await this.view.showEditableComment(result);
+      } catch (e) {
+        console.log(e);
+      }
+    });
+
+    await this.view.cancelEditComment(async blogId => {
+      try {
+        if (blogId) {
+          const content = await this.model.loadComments(blogId);
+          await this.view.loadComments(content);
+        }
+      } catch (e) {
+        console.log(e);
+      }
+    });
+
+    await this.view.updateComment(async (updateCommentData, blogId) => {
+      try {
+        const result = await this.model.updateComment(updateCommentData);
+        console.log(result);
+
+        const content = await this.model.loadComments(blogId);
+        await this.view.loadComments(content);
       } catch (e) {
         console.log(e);
       }

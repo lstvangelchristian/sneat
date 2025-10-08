@@ -140,4 +140,66 @@ export class BlogModel {
       });
     });
   }
+
+  async renderBlogs() {
+    return new Promise((resolve, reject) => {
+      $.ajax({
+        url: `blog`,
+        method: 'GET',
+        success: function (response) {
+          resolve(response);
+        },
+        error: function (xhr) {
+          reject(xhr);
+        }
+      });
+    });
+  }
+
+  async getComment(id) {
+    return new Promise((resolve, reject) => {
+      $.ajax({
+        url: `comment/edit/${id}`,
+        method: 'GET',
+        success: function (response) {
+          resolve(response);
+        },
+        error: function (xhr) {
+          reject(xhr);
+        }
+      });
+    });
+  }
+
+  async loadComments(blogId) {
+    return new Promise((resolve, reject) => {
+      $.ajax({
+        url: `comment/load/${blogId}`,
+        method: 'GET',
+        success: function (response) {
+          resolve(response);
+        },
+        error: function (xhr) {
+          reject(xhr);
+        }
+      });
+    });
+  }
+
+  async updateComment(updatedComment) {
+    return new Promise((resolve, reject) => {
+      $.ajax({
+        url: `comment`,
+        method: 'PUT',
+        contentType: 'application/json',
+        data: JSON.stringify(updatedComment),
+        success: function (response) {
+          resolve(response);
+        },
+        error: function (xhr) {
+          reject(xhr);
+        }
+      });
+    });
+  }
 }

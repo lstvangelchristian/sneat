@@ -37,4 +37,7 @@ Route::middleware('auth')->controller(CommentController::class)->group(function 
     Route::get('/comment/create/modal/{id}', 'renderCreateCommentModal')->name('render-create-comment-modal');
     Route::post('/comment', 'createComment')->name('create-comment');
     Route::get('/comment/{id}', 'renderComments')->name('render-comments');
+    Route::get('/comment/edit/{id}', 'getComment')->name('get-comment');
+    Route::get('/comment/load/{id}', 'loadComments');
+    Route::put('/comment', 'updateComment');
 });

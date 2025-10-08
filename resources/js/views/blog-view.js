@@ -2,6 +2,7 @@ export class BlogView {
   constructor() {
     this.$createBlogField = $('.create-blog-field');
     this.$createBlogForm = $('#create-blog-form');
+    this.$blogsContainer = $('#blogs-container');
   }
 
   async makeBlogFieldResize() {
@@ -179,6 +180,53 @@ export class BlogView {
 
     $('#getCommentsModal').on('hidden.bs.modal', function () {
       $(this).remove();
+    });
+  }
+
+  async renderBlogs(updatedBlogs) {
+    this.$blogsContainer.empty();
+
+    this.$blogsContainer.html(updatedBlogs);
+  }
+
+  async editComment(callback) {
+    $(document).on('click', '.js-edit-comment', async e => {
+      const commentId = $(e.currentTarget).data('commentId');
+      const blogId = $(e.currentTarget).data('blogId');
+      await callback({ commentId, blogId });
+    });
+  }
+
+  async showEditableComment(result) {
+    $(`.js-comment-${result.commentId}`).html(result.content);
+  }
+
+  async cancelEditComment(callback) {
+    $(document).on('click', '.js-cancel-edit-comment', async e => {
+      const blogId = $(e.currentTarget).data('blogId');
+      await callback(blogId);
+    });
+  }
+
+  async loadComments(comments) {
+    const commentsDiv = $('#getCommentsModal .comments-container');
+
+    commentsDiv.empty();
+
+    commentsDiv.html(comments);
+  }
+
+  async updateComment(callback) {
+    $(document).on('submit', '#updateCommentForm', async e => {
+      e.preventDefault();
+
+      const updateCommentForm = new FormData(e.currentTarget);
+
+      const commentId = updateCommentForm.get('comment-id');
+      const updatedComment = updateCommentForm.get('updated-content');
+      const blogId = updateCommentForm.get('blog-id');
+
+      await callback({ commentId, updatedComment }, blogId);
     });
   }
 
