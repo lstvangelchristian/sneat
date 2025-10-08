@@ -254,9 +254,6 @@ export class BlogContr {
 
               const updatedReplies = await this.model.getReplies(deleteData.commentId);
               await this.view.renderReplies(updatedReplies);
-
-              const updatedContent = await this.model.renderBlogs();
-              await this.view.renderBlogs(updatedContent);
             } catch (errors) {
               console.log(errors);
               return;
