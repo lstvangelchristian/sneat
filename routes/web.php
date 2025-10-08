@@ -6,6 +6,7 @@ use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Pages\BlogController;
 use App\Http\Controllers\Pages\CommentController;
 use App\Http\Controllers\Pages\ReactionController;
+use App\Http\Controllers\Pages\ReplyController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware('guest')->controller(RegisterController::class)->group(function () {
@@ -41,4 +42,9 @@ Route::middleware('auth')->controller(CommentController::class)->group(function 
     Route::get('/comment/load/{id}', 'loadComments');
     Route::put('/comment', 'updateComment');
     Route::delete('/comment/{id}', 'deleteComment');
+});
+
+Route::middleware('auth')->controller(ReplyController::class)->group(function () {
+    Route::get('/replies/{id}', 'getReplies');
+    Route::post('/replies', 'createReply');
 });

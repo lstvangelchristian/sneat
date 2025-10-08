@@ -211,9 +211,14 @@ export class BlogView {
   async loadComments(comments) {
     const commentsDiv = $('#getCommentsModal .comments-container');
 
+    console.log(commentsDiv);
+    console.log(comments);
+
     commentsDiv.empty();
 
-    commentsDiv.html(comments);
+    if (comments) {
+      commentsDiv.html(comments);
+    }
   }
 
   async updateComment(callback) {
@@ -235,10 +240,47 @@ export class BlogView {
   }
 
   async showDeleteConfirmation(retrieveId) {
-    $(document).on('click', '.js-delete-comment', e => {
+    $(document).on('click', '.js-delete-comment', async e => {
       const commentId = $(e.currentTarget).data('commentId');
       const blogId = $(e.currentTarget).data('blogId');
-      retrieveId({ commentId, blogId });
+      await retrieveId({ commentId, blogId });
     });
   }
+
+  async showReplies(retrieveCommentId) {
+    $(document).on('click', '.js-show-replies', async e => {
+      const commentId = $(e.currentTarget).data('commentId');
+
+      console.log(commentId);
+
+      if ($(e.currentTarget).hasClass('active')) {
+        $(`.js-replies-container-${commentId}`).empty();
+        $(e.currentTarget).removeClass('active');
+        return;
+      }
+
+      $(e.currentTarget).addClass('active');
+      await retrieveCommentId(commentId);
+    });
+  }
+
+  async renderReplies(result) {
+    console.log($(`.js-replies-container-${result.commentId}`));
+    $(`.js-replies-container-${result.commentId}`).html(result.view);
+  }
+
+  async createReply(retrieveNewReply) {
+    $(document).on('submit', '#createReplyForm', async e => {
+      e.preventDefault();
+
+      const createReplyFormData = new FormData(e.currentTarget);
+
+      const commentId = createReplyFormData.get('comment-id');
+      const content = createReplyFormData.get('content');
+
+      await retrieveNewReply({ commentId, content });
+    });
+  }
+
+  async;
 }

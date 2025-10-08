@@ -15,6 +15,6 @@ class Reply extends Model
 
     public function authors()
     {
-        return $this->belongsTo(Author::class, 'author_id');
+        return $this->belongsTo(Author::class, 'user_id');
     }
 }

@@ -2,9 +2,10 @@
   id="getCommentsModal"
   label="getCommentsModalLabel"
   title="COMMENTS"
+  size="modal-lg"
 >
 
-  <div class="modal-body comments-container" style="height: 400px; overflow-y: auto;">
+  <div class="modal-body comments-container" style="height: 600px; overflow-y: auto;">
     @if($comments->count() === 0)
       <div class="text-center p-3">No Comments Yet</div>
     @else
@@ -32,8 +33,17 @@
               {{ $comment->created_at }}
             </div>
           </div>
+
           <div class="shadow-sm border p-3 js-comment-{{ $comment->id }}">
             {{ $comment->content }}
+          </div>
+
+          <div class="d-flex mt-3">
+            <p class="m-0 js-show-replies text-primary" style="cursor: pointer;" data-comment-id="{{ $comment->id }}">Replies: {{ $comment->replies->count() }}</p>
+          </div>
+
+          <div class="js-replies-container-{{ $comment->id }}">
+
           </div>
         </div>
       @endforeach

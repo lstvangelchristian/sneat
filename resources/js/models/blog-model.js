@@ -217,4 +217,36 @@ export class BlogModel {
       });
     });
   }
+
+  async getReplies(commentId) {
+    return new Promise((resolve, reject) => {
+      $.ajax({
+        url: `replies/${commentId}`,
+        method: 'GET',
+        success: function (response) {
+          resolve(response);
+        },
+        error: function (xhr) {
+          reject(xhr);
+        }
+      });
+    });
+  }
+
+  async createReply(replyData) {
+    return new Promise((resolve, reject) => {
+      $.ajax({
+        url: `replies`,
+        method: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify(replyData),
+        success: function (response) {
+          resolve(response);
+        },
+        error: function (xhr) {
+          reject(xhr);
+        }
+      });
+    });
+  }
 }

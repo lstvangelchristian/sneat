@@ -41,7 +41,7 @@ class CommentController extends Controller
 
     public function renderComments(string $id)
     {
-        $comments = Comment::with('user')->where('blog_id', $id)->latest()->get();
+        $comments = Comment::with('user', 'replies')->where('blog_id', $id)->latest()->get();
 
         return view('components.comment.get-comments', ['comments' => $comments]);
     }
@@ -58,7 +58,7 @@ class CommentController extends Controller
 
     public function loadComments(string $blogId)
     {
-        $comments = Comment::with('user')->where('blog_id', $blogId)->latest()->get();
+        $comments = Comment::with('user', 'replies')->where('blog_id', $blogId)->latest()->get();
 
         return view('components.comment.load-comments', ['comments' => $comments]);
     }
@@ -87,6 +87,6 @@ class CommentController extends Controller
 
         return response()->json([
             'success' => true,
-      ]);
+        ]);
     }
 }

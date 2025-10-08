@@ -169,6 +169,8 @@ export class BlogContr {
     });
 
     await this.view.showDeleteConfirmation(async retrieveId => {
+      console.log(retrieveId);
+
       if (retrieveId) {
         this.confirmDeletion({
           title: 'comment',
@@ -178,11 +180,35 @@ export class BlogContr {
 
               const content = await this.model.loadComments(retrieveId.blogId);
               await this.view.loadComments(content);
+
+              const updatedContent = await this.model.renderBlogs();
+              await this.view.renderBlogs(updatedContent);
             } catch (errors) {
               return;
             }
           }
         });
+      }
+    });
+
+    await this.view.showReplies(async commentId => {
+      try {
+        const result = await this.model.getReplies(commentId);
+        console.log(result);
+        await this.view.renderReplies(result);
+      } catch (e) {
+        console.log(e);
+      }
+    });
+
+    await this.view.createReply(async retrieveNewReply => {
+      try {
+        const result = await this.model.createReply(retrieveNewReply);
+
+        const updatedReplies = await this.model.getReplies(retrieveNewReply.commentId);
+        await this.view.renderReplies(updatedReplies);
+      } catch (e) {
+        console.log(e);
       }
     });
   }
