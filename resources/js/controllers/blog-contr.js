@@ -124,8 +124,13 @@ export class BlogContr {
         try {
           const content = await this.model.getCreateCommentContent(comment.blogId);
           await this.view.renderCreateCommentContent(content);
-        } catch (e) {
-          console.log(e);
+        } catch (errors) {
+          console.log(errors);
+          this.showResult({
+            title: errors.exception[0],
+            text: 'Click the button to close',
+            icon: 'error'
+          });
         }
       }
     });
@@ -133,17 +138,25 @@ export class BlogContr {
     await this.view.createComment(async commentData => {
       try {
         const res = await this.model.createComment(commentData);
-        await this.view.hideModal('#createCommentModal');
-        const updatedContent = await this.model.renderBlogs();
-        await this.view.renderBlogs(updatedContent);
 
+        if (res.success) {
+          await this.view.hideModal('#createCommentModal');
+
+          const updatedContent = await this.model.renderBlogs();
+          await this.view.renderBlogs(updatedContent);
+
+          this.showResult({
+            title: res.message,
+            text: 'Click the button to close',
+            icon: 'success'
+          });
+        }
+      } catch (errors) {
         this.showResult({
-          title: 'Your comment has been submitted successfully',
+          title: errors.content[0] || errors.blogId[0] || errors.exception[0],
           text: 'Click the button to close',
-          icon: 'success'
+          icon: 'error'
         });
-      } catch (error) {
-        console.log(res);
       }
     });
 
@@ -151,8 +164,13 @@ export class BlogContr {
       try {
         const result = await this.model.renderComments(blogId);
         await this.view.renderCommentContent(result);
-      } catch (e) {
-        console.log(e);
+      } catch (errors) {
+        console.log(errors);
+        this.showResult({
+          title: errors.exception[0],
+          text: 'Click the button to close',
+          icon: 'error'
+        });
       }
     });
 
@@ -160,8 +178,13 @@ export class BlogContr {
       try {
         const result = await this.model.getComment(editData.commentId);
         await this.view.showEditableComment(result);
-      } catch (e) {
-        console.log(e);
+      } catch (errors) {
+        console.log(errors);
+        this.showResult({
+          title: errors.exception[0],
+          text: 'Click the button to close',
+          icon: 'error'
+        });
       }
     });
 
@@ -171,40 +194,55 @@ export class BlogContr {
           const content = await this.model.loadComments(blogId);
           await this.view.loadComments(content);
         }
-      } catch (e) {
-        console.log(e);
+      } catch (errors) {
+        console.log(errors);
+        this.showResult({
+          title: errors.exception[0],
+          text: 'Click the button to close',
+          icon: 'error'
+        });
       }
     });
 
     await this.view.updateComment(async (updateCommentData, blogId) => {
       try {
-        const result = await this.model.updateComment(updateCommentData);
-        console.log(result);
-
-        const content = await this.model.loadComments(blogId);
-        await this.view.loadComments(content);
-      } catch (e) {
-        console.log(e);
+        const res = await this.model.updateComment(updateCommentData);
+        if (res.success) {
+          const content = await this.model.loadComments(blogId);
+          await this.view.loadComments(content);
+        }
+      } catch (errors) {
+        console.log(errors);
+        this.showResult({
+          title: errors.updatedComment[0] || errors.commentId[0] || errors.exception[0],
+          text: 'Click the button to close',
+          icon: 'error'
+        });
       }
     });
 
     await this.view.showDeleteConfirmation(async retrieveId => {
-      console.log(retrieveId);
-
       if (retrieveId) {
         this.confirmDeletion({
           title: 'comment',
           onConfirmDelete: async () => {
             try {
-              await this.model.deleteComment(retrieveId.commentId);
+              const res = await this.model.deleteComment(retrieveId.commentId);
 
-              const content = await this.model.loadComments(retrieveId.blogId);
-              await this.view.loadComments(content);
+              if (res.success) {
+                const content = await this.model.loadComments(retrieveId.blogId);
+                await this.view.loadComments(content);
 
-              const updatedContent = await this.model.renderBlogs();
-              await this.view.renderBlogs(updatedContent);
+                const updatedContent = await this.model.renderBlogs();
+                await this.view.renderBlogs(updatedContent);
+              }
             } catch (errors) {
-              return;
+              console.log(errors);
+              this.showResult({
+                title: errors.exception[0],
+                text: 'Click the button to close',
+                icon: 'error'
+              });
             }
           }
         });

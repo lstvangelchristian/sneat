@@ -3,28 +3,34 @@
 namespace App\Http\Controllers\Pages;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\CommentRequest;
-use App\Models\Comment;
-use Illuminate\Http\Request;
+use App\Http\Requests\CommentRequests\CreateCommentRequest;
+use App\Http\Requests\CommentRequests\UpdateCommentRequest;
+use App\Http\Services\CommentService;
 
 class CommentController extends Controller
 {
-    public function createComment(CommentRequest $request)
+    protected $commentService;
+
+    protected $authId;
+
+    public function __construct(CommentService $service)
+    {
+        $this->authId = auth('author')->id();
+
+        $this->commentService = $service;
+    }
+
+    public function createComment(CreateCommentRequest $request)
     {
         try {
-            $id = auth('author')->id();
-
             $validated = $request->validated();
 
-            $newComment = [
-                'content' => $validated['content'],
-                'blog_id' => $validated['blogId'],
-                'user_id' => $id,
-            ];
+            $this->commentService->createComment($validated, $this->authId);
 
-            $result = Comment::create($newComment);
-
-            return response()->json(['result' => $result]);
+            return response()->json([
+                'success' => true,
+                'message' => 'Your comment has been posted successfully',
+            ]);
         } catch (\Exception $e) {
             return response()->json([
                 'errors' => [
@@ -41,52 +47,85 @@ class CommentController extends Controller
 
     public function renderComments(string $id)
     {
-        $comments = Comment::with('user', 'replies')->where('blog_id', $id)->latest()->get();
+        try {
+            $comments = $this->commentService->getComments($id);
 
-        return view('components.comment.get-comments', ['comments' => $comments]);
+            return view('components.comment.get-comments', ['comments' => $comments]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'errors' => [
+                    'exception' => ['Sorry, something went wrong. Please try again later.'],
+                ],
+            ]);
+        }
     }
 
-    public function getComment(string $commentId)
+    public function getComment(string $id)
     {
-        $comment = Comment::findOrFail($commentId);
+        try {
+            $comment = $this->commentService->getComment($id);
 
-        return response()->json([
-            'content' => (string) view('components.comment.update-comment', ['comment' => $comment]),
-            'commentId' => $commentId,
-        ]);
+            return response()->json([
+                'content' => view('components.comment.update-comment', ['comment' => $comment])->render(),
+                'commentId' => $id,
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'errors' => [
+                    'exception' => ['Sorry, something went wrong. Please try again later.'],
+                ],
+            ]);
+        }
     }
 
-    public function loadComments(string $blogId)
+    public function loadComments(string $id)
     {
-        $comments = Comment::with('user', 'replies')->where('blog_id', $blogId)->latest()->get();
+        try {
+            $comments = $this->commentService->getComments($id);
 
-        return view('components.comment.load-comments', ['comments' => $comments]);
+            return view('components.comment.load-comments', ['comments' => $comments]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'errors' => [
+                    'exception' => ['Sorry, something went wrong. Please try again later.'],
+                ],
+            ]);
+        }
     }
 
-    public function updateComment(Request $request)
+    public function updateComment(UpdateCommentRequest $request)
     {
-        $validated = $request->validate([
-            'commentId' => 'required',
-            'updatedComment' => 'required',
-        ]);
+        try {
+            $validated = $request->validated();
 
-        $commentToBeUpdated = Comment::findOrFail($validated['commentId']);
+            $this->commentService->updateComment($validated);
 
-        $newComment = ['content' => $validated['updatedComment']];
-
-        $result = $commentToBeUpdated->update($newComment);
-
-        return response()->json(['success' => true]);
+            return response()->json([
+                'success' => true,
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'errors' => [
+                    'exception' => ['Sorry, something went wrong. Please try again later.'],
+                ],
+            ]);
+        }
     }
 
     public function deleteComment(string $id)
     {
-        $commentToBeDeleted = Comment::findOrFail($id);
+        try {
+            $this->commentService->deleteComment($id);
 
-        $res = $commentToBeDeleted->delete();
-
-        return response()->json([
-            'success' => true,
-        ]);
+            return response()->json([
+                'success' => true,
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'errors' => [
+                    'exception' => ['Sorry, something went wrong. Please try again later.'],
+                ],
+            ]);
+        }
     }
 }
