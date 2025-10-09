@@ -22,23 +22,23 @@ Route::middleware('guest')->controller(LoginController::class)->group(function (
 Route::post('/logout', [LogoutController::class, 'logout'])->name('logout');
 
 Route::middleware('auth')->controller(BlogController::class)->group(function () {
-    Route::get('/blog', 'showBlog')->name('show-blog');
-    Route::post('/blog', 'createBlog')->name('create-blog');
-    Route::get('/blog/update/{id}', 'renderUpdateModal')->name('render-update-modal');
-    Route::put('/blog/update/{id}', 'updateBlog')->name('update-blog');
-    Route::delete('/blog/delete/{id}', 'deleteBlog')->name('delete-blog');
+    Route::get('/blog', 'showBlogs')->name('show-blog');
+    Route::post('/blog', 'createBlog');
+    Route::get('/blog/update/{id}', 'renderUpdateModal');
+    Route::put('/blog/update/{id}', 'updateBlog');
+    Route::delete('/blog/delete/{id}', 'deleteBlog');
 });
 
 Route::middleware('auth')->controller(ReactionController::class)->group(function () {
-    Route::post('/reaction', 'createReaction')->name('create-reaction');
-    Route::get('/reaction/{id}', 'getReactionsByBlogId')->name('get-reactions');
+    Route::post('/reaction', 'createReaction');
+    Route::get('/reaction/{id}', 'getReactionsByBlogId');
 });
 
 Route::middleware('auth')->controller(CommentController::class)->group(function () {
-    Route::get('/comment/create/modal/{id}', 'renderCreateCommentModal')->name('render-create-comment-modal');
-    Route::post('/comment', 'createComment')->name('create-comment');
-    Route::get('/comment/{id}', 'renderComments')->name('render-comments');
-    Route::get('/comment/edit/{id}', 'getComment')->name('get-comment');
+    Route::get('/comment/create/modal/{id}', 'renderCreateCommentModal');
+    Route::post('/comment', 'createComment');
+    Route::get('/comment/{id}', 'renderComments');
+    Route::get('/comment/edit/{id}', 'getComment');
     Route::get('/comment/load/{id}', 'loadComments');
     Route::put('/comment', 'updateComment');
     Route::delete('/comment/{id}', 'deleteComment');

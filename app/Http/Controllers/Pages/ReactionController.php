@@ -3,32 +3,27 @@
 namespace App\Http\Controllers\Pages;
 
 use App\Http\Controllers\Controller;
-use App\Models\Reaction;
-use Illuminate\Http\Request;
+use App\Http\Requests\ReactionRequests\CreateReactionRequest;
+use App\Http\Services\ReactionService;
 
 class ReactionController extends Controller
 {
-    public function createReaction(Request $request)
+    protected $reactionService;
+
+    protected $authId;
+
+    public function __construct(ReactionService $service)
+    {
+        $this->reactionService = $service;
+        $this->authId = auth('author')->id();
+    }
+
+    public function createReaction(CreateReactionRequest $request)
     {
         try {
-            $id = auth('author')->id();
+            $validated = $request->validated();
 
-            $validated = $request->validate([
-                'blog_id' => 'required|integer',
-                'type_id' => 'required|integer',
-            ]);
-
-            $newReaction = Reaction::updateOrCreate(
-                [
-                    'blog_id' => $validated['blog_id'],
-                    'user_id' => $id,
-                ],
-                [
-                    'type_id' => $validated['type_id'],
-                ]
-            );
-
-            return response()->json($newReaction);
+            $this->reactionService->createReaction($validated, $this->authId);
         } catch (\Exception $e) {
             return response()->json([
                 'errors' => [
@@ -40,8 +35,16 @@ class ReactionController extends Controller
 
     public function getReactionsByBlogId(string $id)
     {
-        $reactions = Reaction::where('blog_id', $id)->with('user')->latest()->get();
+        try {
+            $reactions = $this->reactionService->getReactionsByBlodId($id);
 
-        return view('components.reaction.get-reactions', ['reactions' => $reactions]);
+            return view('components.reaction.get-reactions', ['reactions' => $reactions]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'errors' => [
+                    'exception' => ['Sorry, something went wrong. Please try again later.'],
+                ],
+            ]);
+        }
     }
 }

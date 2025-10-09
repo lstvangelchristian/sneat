@@ -46,6 +46,7 @@ export class BlogView {
       await this.disableButton(disableButtonData);
 
       callback(newBlog).finally(async () => {
+        this.$createBlogForm[0].reset();
         await this.enableCreateButton(this.$createBlogForm);
       });
     });
@@ -328,15 +329,16 @@ export class BlogView {
     });
   }
 
-  async updateRepliesCount(isDelete) {
-    const html = $('.js-replies-count').text();
-    const currentCount = html.slice(9);
+  async updateRepliesCount(updateReplies) {
+    const innerText = $(`.js-replies-count-${updateReplies.commentId}`).text();
 
-    if (isDelete) {
-      $('.js-replies-count').text(`Replies: ${Number(currentCount) - 1}`);
+    const strCount = innerText.slice(9);
+
+    if (updateReplies.isDelete) {
+      $(`.js-replies-count-${updateReplies.commentId}`).text(`Replies: ${Number(strCount) - 1}`);
       return;
     }
 
-    $('.js-replies-count').text(`Replies: ${Number(currentCount) + 1}`);
+    $(`.js-replies-count-${updateReplies.commentId}`).text(`Replies: ${Number(strCount) + 1}`);
   }
 }

@@ -2,315 +2,94 @@ export class BlogModel {
   async #request(url = '', method = 'GET', data = undefined) {
     return new Promise((resolve, reject) => {
       $.ajax({
-        url: url,
-        method: method,
+        url,
+        method,
         contentType: 'application/json',
-        data: data,
+        data: data ? JSON.stringify(data) : null,
         success: response => {
-          return response;
+          resolve(response);
         },
-        error: xhr => {
-          return xhr;
+        error: hasError => {
+          const errors = hasError.responseJSON.errors || hasError.errors;
+          reject(errors);
         }
       });
     });
   }
 
   async createBlog(newBlog) {
-    return new Promise((resolve, reject) => {
-      $.ajax({
-        url: 'blog',
-        method: 'POST',
-        contentType: 'application/json',
-        data: JSON.stringify(newBlog),
-        success: function (response) {
-          resolve(response.success);
-        },
-        error: function (xhr) {
-          reject(xhr.responseJSON.errors);
-        }
-      });
-    });
-  }
-
-  async renderUpdateModal(blogId) {
-    return new Promise((resolve, reject) => {
-      $.ajax({
-        url: `blog/update/${blogId}`,
-        success: function (response) {
-          resolve(response);
-        },
-        error: function (xhr) {
-          reject(xhr);
-        }
-      });
-    });
-  }
-
-  async updateBlog(updateBlog) {
-    return new Promise((resolve, reject) => {
-      $.ajax({
-        url: `blog/update/${updateBlog.blogId}`,
-        method: 'PUT',
-        contentType: 'application/json',
-        data: JSON.stringify(updateBlog.data),
-        success: function (response) {
-          resolve(response);
-        },
-        error: function (xhr) {
-          reject(xhr.responseJSON.errors);
-        }
-      });
-    });
-  }
-
-  async deleteBlog(id) {
-    return new Promise((resolve, reject) => {
-      $.ajax({
-        url: `blog/delete/${id}`,
-        method: 'DELETE',
-        success: function (response) {
-          resolve(response);
-        },
-        error: function (xhr) {
-          reject(xhr.responseJSON.errors);
-        }
-      });
-    });
-  }
-
-  async createReaction(reactionData) {
-    return new Promise((resolve, reject) => {
-      $.ajax({
-        url: `reaction`,
-        method: 'POST',
-        contentType: 'application/json',
-        data: JSON.stringify(reactionData),
-        success: function (response) {
-          resolve(response);
-        },
-        error: function (xhr) {
-          reject(xhr);
-        }
-      });
-    });
-  }
-
-  async getReactions(id) {
-    return new Promise((resolve, reject) => {
-      $.ajax({
-        url: `reaction/${id}`,
-        method: 'GET',
-        success: function (response) {
-          resolve(response);
-        },
-        error: function (xhr) {
-          reject(xhr);
-        }
-      });
-    });
-  }
-
-  async getCreateCommentContent(id) {
-    return new Promise((resolve, reject) => {
-      $.ajax({
-        url: `comment/create/modal/${id}`,
-        method: 'GET',
-        success: function (response) {
-          resolve(response);
-        },
-        error: function (xhr) {
-          reject(xhr);
-        }
-      });
-    });
-  }
-
-  async createComment(commentData) {
-    return new Promise((resolve, reject) => {
-      $.ajax({
-        url: `comment`,
-        method: 'POST',
-        contentType: 'application/json',
-        data: JSON.stringify(commentData),
-        success: function (response) {
-          resolve(response);
-        },
-        error: function (xhr) {
-          reject(xhr);
-        }
-      });
-    });
-  }
-
-  async renderComments(id) {
-    return new Promise((resolve, reject) => {
-      $.ajax({
-        url: `comment/${id}`,
-        method: 'GET',
-        success: function (response) {
-          resolve(response);
-        },
-        error: function (xhr) {
-          reject(xhr);
-        }
-      });
-    });
+    return await this.#request('blog', 'POST', newBlog);
   }
 
   async renderBlogs() {
-    return new Promise((resolve, reject) => {
-      $.ajax({
-        url: `blog`,
-        method: 'GET',
-        success: function (response) {
-          resolve(response);
-        },
-        error: function (xhr) {
-          reject(xhr);
-        }
-      });
-    });
+    return await this.#request('blog');
   }
 
-  async getComment(id) {
-    return new Promise((resolve, reject) => {
-      $.ajax({
-        url: `comment/edit/${id}`,
-        method: 'GET',
-        success: function (response) {
-          resolve(response);
-        },
-        error: function (xhr) {
-          reject(xhr);
-        }
-      });
-    });
+  async renderUpdateModal(blogId) {
+    return await this.#request(`blog/update/${blogId}`);
+  }
+
+  async updateBlog(updateBlog) {
+    return await this.#request(`blog/update/${updateBlog.blogId}`, 'PUT', updateBlog.data);
+  }
+
+  async deleteBlog(id) {
+    return await this.#request(`blog/delete/${id}`, 'DELETE');
+  }
+
+  async createReaction(reactionData) {
+    return await this.#request('reaction', 'POST', reactionData);
+  }
+
+  async getReactions(id) {
+    return await this.#request(`reaction/${id}`);
+  }
+
+  async getCreateCommentContent(id) {
+    return await this.#request(`comment/create/modal/${id}`);
+  }
+
+  async createComment(commentData) {
+    return await this.#request('comment', 'POST', commentData);
+  }
+
+  async renderComments(id) {
+    return await this.#request(`comment/${id}`);
   }
 
   async loadComments(blogId) {
-    return new Promise((resolve, reject) => {
-      $.ajax({
-        url: `comment/load/${blogId}`,
-        method: 'GET',
-        success: function (response) {
-          resolve(response);
-        },
-        error: function (xhr) {
-          reject(xhr);
-        }
-      });
-    });
+    return await this.#request(`comment/load/${blogId}`);
+  }
+
+  async getComment(id) {
+    return await this.#request(`comment/edit/${id}`);
   }
 
   async updateComment(updatedComment) {
-    return new Promise((resolve, reject) => {
-      $.ajax({
-        url: `comment`,
-        method: 'PUT',
-        contentType: 'application/json',
-        data: JSON.stringify(updatedComment),
-        success: function (response) {
-          resolve(response);
-        },
-        error: function (xhr) {
-          reject(xhr);
-        }
-      });
-    });
+    return await this.#request('comment', 'PUT', updatedComment);
   }
 
   async deleteComment(commentId) {
-    return new Promise((resolve, reject) => {
-      $.ajax({
-        url: `comment/${commentId}`,
-        method: 'DELETE',
-        success: function (response) {
-          resolve(response);
-        },
-        error: function (xhr) {
-          reject(xhr);
-        }
-      });
-    });
-  }
-
-  async getReplies(commentId) {
-    return new Promise((resolve, reject) => {
-      $.ajax({
-        url: `replies/${commentId}`,
-        method: 'GET',
-        success: function (response) {
-          resolve(response);
-        },
-        error: function (xhr) {
-          reject(xhr);
-        }
-      });
-    });
+    return await this.#request(`comment/${commentId}`, 'DELETE');
   }
 
   async createReply(replyData) {
-    return new Promise((resolve, reject) => {
-      $.ajax({
-        url: `replies`,
-        method: 'POST',
-        contentType: 'application/json',
-        data: JSON.stringify(replyData),
-        success: function (response) {
-          resolve(response);
-        },
-        error: function (xhr) {
-          reject(xhr);
-        }
-      });
-    });
+    return await this.#request('replies', 'POST', replyData);
+  }
+
+  async getReplies(commentId) {
+    return await this.#request(`replies/${commentId}`);
   }
 
   async getReply(replyId) {
-    return new Promise((resolve, reject) => {
-      $.ajax({
-        url: `reply/${replyId}`,
-        method: 'GET',
-        success: function (response) {
-          resolve(response);
-        },
-        error: function (xhr) {
-          reject(xhr);
-        }
-      });
-    });
+    return await this.#request(`reply/${replyId}`);
   }
 
   async updateReply(replyData) {
-    return new Promise((resolve, reject) => {
-      $.ajax({
-        url: `reply`,
-        method: 'PUT',
-        contentType: 'application/json',
-        data: JSON.stringify(replyData),
-        success: function (response) {
-          resolve(response);
-        },
-        error: function (xhr) {
-          reject(xhr);
-        }
-      });
-    });
+    return await this.#request('reply', 'PUT', replyData);
   }
 
   async deleteReply(replyId) {
-    return new Promise((resolve, reject) => {
-      $.ajax({
-        url: `reply/${replyId}`,
-        method: 'DELETE',
-        success: function (response) {
-          resolve(response);
-        },
-        error: function (xhr) {
-          reject(xhr);
-        }
-      });
-    });
+    return await this.#request(`reply/${replyId}`, 'DELETE');
   }
 }

@@ -3,39 +3,52 @@
 namespace App\Http\Controllers\Pages;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\BlogRequest;
+use App\Http\Requests\BlogRequests\CreateBlogRequest;
+use App\Http\Requests\BlogRequests\UpdateBlogRequest;
 use App\Http\Services\BlogService;
 
 class BlogController extends Controller
 {
     protected $blogService;
 
+    protected $authId;
+
     public function __construct(BlogService $service)
     {
+        $this->authId = auth('author')->id();
+
         $this->blogService = $service;
     }
 
-    public function showBlog()
+    public function showBlogs()
     {
-        $blogs = $this->blogService->getBlogs();
+        try {
+            $blogs = $this->blogService->getBlogs();
 
-        if (request()->ajax()) {
-            return view('components.blog.load-blogs', ['blogs' => $blogs]);
+            if (request()->ajax()) {
+                return view('components.blog.load-blogs', ['blogs' => $blogs]);
+            }
+
+            return view('pages.blog', ['blogs' => $blogs]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'errors' => [
+                    'exception' => ['Sorry, something went wrong. Please try again later.']],
+            ]);
         }
-
-        return view('pages.blog', ['blogs' => $blogs]);
     }
 
-    public function createBlog(BlogRequest $request, BlogService $service)
+    public function createBlog(CreateBlogRequest $request)
     {
         try {
             $validated = $request->validated();
 
-            $id = auth('author')->id();
+            $this->blogService->createBlog($validated, $this->authId);
 
-            $this->blogService->createBlog($validated, $id);
-
-            return response()->json(['success' => true]);
+            return response()->json([
+                'success' => true,
+                'message' => 'Your blog has been posted successfully',
+            ]);
         } catch (\Exception $e) {
             return response()->json([
                 'errors' => [
@@ -46,21 +59,29 @@ class BlogController extends Controller
 
     public function renderUpdateModal(string $id)
     {
-        $blog = $this->blogService->getBlog($id);
+        try {
+            $blog = $this->blogService->getBlogById($id);
 
-        return view('components.blog.update-blog', ['blog' => $blog]);
+            return view('components.blog.update-blog', ['blog' => $blog]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'errors' => [
+                    'exception' => ['Sorry, something went wrong. Please try again later.']],
+            ]);
+        }
     }
 
-    public function updateBlog(BlogRequest $request, string $id)
+    public function updateBlog(UpdateBlogRequest $request, string $id)
     {
         try {
             $validated = $request->validated();
 
-            $new = ['content' => $validated['updatedContent']];
+            $this->blogService->updateBlog($validated, $id);
 
-            $result = $this->blogService->updateBlog($new, $id);
-
-            return response()->json(['success' => true]);
+            return response()->json([
+                'success' => true,
+                'message' => 'Your blog has been updated successfully',
+            ]);
         } catch (\Exception $e) {
             return response()->json([
                 'errors' => [
@@ -71,8 +92,17 @@ class BlogController extends Controller
 
     public function deleteBlog(string $id)
     {
-        $result = $this->blogService->deleteBlog($id);
+        try {
+            $result = $this->blogService->deleteBlog($id);
 
-        return response()->json(['success' => true]);
+            return response()->json([
+                'success' => true,
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'errors' => [
+                    'exception' => ['Sorry, something went wrong. Please try again later.']],
+            ]);
+        }
     }
 }

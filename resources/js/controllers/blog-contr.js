@@ -11,16 +11,18 @@ export class BlogContr {
 
     await this.view.createBlog(async newBlog => {
       try {
-        await this.model.createBlog(newBlog);
+        const res = await this.model.createBlog(newBlog);
 
-        const updatedContent = await this.model.renderBlogs();
-        await this.view.renderBlogs(updatedContent);
+        if (res.success) {
+          const updatedBlogs = await this.model.renderBlogs();
+          await this.view.renderBlogs(updatedBlogs);
 
-        this.showResult({
-          title: 'Your blog has been posted successfully',
-          text: 'Click the button to close',
-          icon: 'success'
-        });
+          this.showResult({
+            title: res.message,
+            text: 'Click the button to close',
+            icon: 'success'
+          });
+        }
       } catch (errors) {
         this.showResult({
           title: errors.content[0] || errors.exception[0],
@@ -32,27 +34,33 @@ export class BlogContr {
 
     await this.view.getBlogId(async data => {
       try {
-        const result = await this.model.renderUpdateModal(data.blogId);
-        await this.view.renderModal(result);
-      } catch (error) {
-        console.log(error);
+        const res = await this.model.renderUpdateModal(data.blogId);
+        await this.view.renderModal(res);
+      } catch (errors) {
+        this.showResult({
+          title: errors.exception[0],
+          text: 'Click the button to close',
+          icon: 'error'
+        });
       }
     });
 
     await this.view.updateBlog(async data => {
       try {
-        await this.model.updateBlog(data);
+        const res = await this.model.updateBlog(data);
 
-        const updatedContent = await this.model.renderBlogs();
-        await this.view.renderBlogs(updatedContent);
+        if (res.success) {
+          const updatedContent = await this.model.renderBlogs();
+          await this.view.renderBlogs(updatedContent);
 
-        await this.view.hideModal('#updateBlogModal');
+          await this.view.hideModal('#updateBlogModal');
 
-        this.showResult({
-          title: 'Your blog has been posted successfully',
-          text: 'Click the button to close',
-          icon: 'success'
-        });
+          this.showResult({
+            title: res.message,
+            text: 'Click the button to close',
+            icon: 'success'
+          });
+        }
       } catch (errors) {
         console.log(errors);
         this.showResult({
@@ -69,9 +77,12 @@ export class BlogContr {
           title: 'blog',
           onConfirmDelete: async () => {
             try {
-              await this.model.deleteBlog(deleteData.blogId);
-              const updatedContent = await this.model.renderBlogs();
-              await this.view.renderBlogs(updatedContent);
+              const res = await this.model.deleteBlog(deleteData.blogId);
+
+              if (res.success) {
+                const updatedContent = await this.model.renderBlogs();
+                await this.view.renderBlogs(updatedContent);
+              }
             } catch (errors) {
               return;
             }
@@ -83,10 +94,15 @@ export class BlogContr {
     await this.view.createReact(async reactionData => {
       try {
         await this.model.createReaction(reactionData);
+
         const updatedContent = await this.model.renderBlogs();
         await this.view.renderBlogs(updatedContent);
-      } catch (error) {
-        console.log(error);
+      } catch (errors) {
+        this.showResult({
+          title: errors.blog_id[0] || errors.type_id[0] || errors.exception[0],
+          text: 'Click the button to close',
+          icon: 'error'
+        });
       }
     });
 
@@ -94,8 +110,12 @@ export class BlogContr {
       try {
         const result = await this.model.getReactions(id);
         await this.view.renderReactionModal(result);
-      } catch (error) {
-        console.log(error);
+      } catch (errors) {
+        this.showResult({
+          title: errors.exception[0],
+          text: 'Click the button to close',
+          icon: 'error'
+        });
       }
     });
 
@@ -208,7 +228,7 @@ export class BlogContr {
         const updatedReplies = await this.model.getReplies(retrieveNewReply.commentId);
         await this.view.renderReplies(updatedReplies);
 
-        await this.view.updateRepliesCount(false);
+        await this.view.updateRepliesCount({ isDelete: false, commentId: retrieveNewReply.commentId });
       } catch (e) {
         console.log(e);
       }
@@ -257,7 +277,7 @@ export class BlogContr {
               const updatedReplies = await this.model.getReplies(deleteData.commentId);
               await this.view.renderReplies(updatedReplies);
 
-              await this.view.updateRepliesCount(true);
+              await this.view.updateRepliesCount({ isDelete: true, commentId: deleteData.commentId });
             } catch (errors) {
               console.log(errors);
               return;

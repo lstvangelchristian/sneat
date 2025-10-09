@@ -1,33 +1,23 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\BlogRequests;
 
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
 
-class BlogRequest extends FormRequest
+class CreateBlogRequest extends FormRequest
 {
-    public function authorize()
+    public function authorize(): bool
     {
         return true;
     }
 
     public function rules(): array
     {
-        if ($this->isMethod('post')) {
-            return [
-                'content' => 'required|min:10',
-            ];
-        }
-
-        if ($this->isMethod('put')) {
-            return [
-                'updatedContent' => 'required|min:10',
-            ];
-        }
-
-        return [];
+        return [
+            'content' => 'required|min:10',
+        ];
     }
 
     public function messages()
@@ -35,8 +25,6 @@ class BlogRequest extends FormRequest
         return [
             'content.required' => 'You must write something',
             'content.min' => 'Content must be at least 10 characters',
-            'updatedContent.required' => 'You must write something',
-            'updatedContent.min' => 'Content must be at least 10 characters',
         ];
     }
 
