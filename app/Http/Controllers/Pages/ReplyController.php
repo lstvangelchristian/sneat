@@ -3,76 +3,108 @@
 namespace App\Http\Controllers\Pages;
 
 use App\Http\Controllers\Controller;
-use App\Models\Reply;
-use Illuminate\Http\Request;
+use App\Http\Requests\ReplyRequests\CreateReplyRequest;
+use App\Http\Requests\ReplyRequests\UpdateReplyRequest;
+use App\Http\Services\ReplyService;
 
 class ReplyController extends Controller
 {
+    protected $replyService;
+
+    protected $authId;
+
+    public function __construct(ReplyService $service)
+    {
+        $this->replyService = $service;
+        $this->authId = $id = auth('author')->id();
+    }
+
     public function getReplies(string $commentId)
     {
-        $replies = Reply::with('authors')->where('comment_id', $commentId)->latest()->get();
+        try {
+            $replies = $this->replyService->getReplies($commentId);
 
-        return response()->json([
-            'view' => view('components.reply.get-replies', ['replies' => $replies, 'commentId' => $commentId])->render(),
-            'commentId' => $commentId,
-        ]);
+            return response()->json([
+                'view' => view('components.reply.get-replies', ['replies' => $replies, 'commentId' => $commentId])->render(),
+                'commentId' => $commentId,
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'errors' => [
+                    'exception' => ['Sorry, something went wrong. Please try again later.'],
+                ],
+            ]);
+        }
     }
 
-    public function createReply(Request $request)
+    public function createReply(CreateReplyRequest $request)
     {
-        $id = auth('author')->id();
+        try {
+            $validated = $request->validated();
 
-        $validated = $request->validate([
-            'commentId' => 'required|integer',
-            'content' => 'required',
-        ]);
+            $this->replyService->createReply($validated, $this->authId);
 
-        $newReply = [
-            'comment_id' => $validated['commentId'],
-            'user_id' => $id,
-            'content' => $validated['content'],
-        ];
-
-        $result = Reply::create($newReply);
-
-        return response()->json([
-            'success' => true,
-            'newReply' => $result,
-        ]);
+            return response()->json(
+                [
+                    'success' => true,
+                ]
+            );
+        } catch (\Exception $e) {
+            return response()->json([
+                'errors' => [
+                    'exception' => ['Sorry, something went wrong. Please try again later.'],
+                ],
+            ]);
+        }
     }
 
-    public function getReply(string $replyId)
+    public function getReply(string $id)
     {
-        $reply = Reply::findOrFail($replyId);
+        try {
+            $reply = $this->replyService->getReply($id);
 
-        return response()->json([
-            'view' => view('components.reply.update-reply', ['reply' => $reply])->render(),
-            'replyId' => $replyId,
-        ]);
+            return response()->json([
+                'view' => view('components.reply.update-reply', ['reply' => $reply])->render(),
+                'replyId' => $id,
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'errors' => [
+                    'exception' => ['Sorry, something went wrong. Please try again later.'],
+                ],
+            ]);
+        }
     }
 
-    public function updateReply(Request $request)
+    public function updateReply(UpdateReplyRequest $request)
     {
-        $validated = $request->validate([
-            'replyId' => 'required|integer',
-            'updatedReply' => 'required',
-        ]);
+        try {
+            $validated = $request->validated();
 
-        $replyToBeUpdated = Reply::findOrFail($validated['replyId']);
+            $this->replyService->updateReply($validated);
 
-        $newReply = ['content' => $validated['updatedReply']];
-
-        $replyToBeUpdated->update($newReply);
-
-        return response()->json(['success' => true]);
+            return response()->json(['success' => true]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'errors' => [
+                    'exception' => ['Sorry, something went wrong. Please try again later.'],
+                ],
+            ]);
+        }
     }
 
     public function deleteReply(string $id)
     {
-        $reply = Reply::findOrFail($id);
+        try {
+            $this->replyService->deleteReply($id);
 
-        $reply->delete();
-
-        return response()->json(['success' => true]);
+            return response()->json(['success' => true]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'errors' => [
+                    'exception' => ['Sorry, something went wrong. Please try again later.'],
+                ],
+            ]);
+        }
     }
 }

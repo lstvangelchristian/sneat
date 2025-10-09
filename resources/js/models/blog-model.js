@@ -10,6 +10,7 @@ export class BlogModel {
           resolve(response);
         },
         error: hasError => {
+          console.log(hasError);
           const errors = hasError.responseJSON.errors || hasError.errors;
           reject(errors);
         }

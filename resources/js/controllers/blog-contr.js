@@ -252,23 +252,33 @@ export class BlogContr {
     await this.view.showReplies(async commentId => {
       try {
         const result = await this.model.getReplies(commentId);
-        console.log(result);
         await this.view.renderReplies(result);
-      } catch (e) {
-        console.log(e);
+        console.log(result);
+      } catch (errors) {
+        console.log(errors);
+        this.showResult({
+          title: errors.exception[0],
+          text: 'Click the button to close',
+          icon: 'error'
+        });
       }
     });
 
     await this.view.createReply(async retrieveNewReply => {
       try {
-        const result = await this.model.createReply(retrieveNewReply);
+        await this.model.createReply(retrieveNewReply);
 
         const updatedReplies = await this.model.getReplies(retrieveNewReply.commentId);
         await this.view.renderReplies(updatedReplies);
 
         await this.view.updateRepliesCount({ isDelete: false, commentId: retrieveNewReply.commentId });
-      } catch (e) {
-        console.log(e);
+      } catch (errors) {
+        console.log(errors);
+        this.showResult({
+          title: errors.content[0] || errors.commentId[0] || errors.exception[0],
+          text: 'Click the button to close',
+          icon: 'error'
+        });
       }
     });
 
@@ -276,9 +286,13 @@ export class BlogContr {
       try {
         const res = await this.model.getReply(replyData.replyId);
         await this.view.makeReplyContentEditable(res);
-      } catch (e) {
-        console.log(e);
-        console.log('haserrors');
+      } catch (errors) {
+        console.log(errors);
+        this.showResult({
+          title: errors.exception[0],
+          text: 'Click the button to close',
+          icon: 'error'
+        });
       }
     });
 
@@ -288,8 +302,13 @@ export class BlogContr {
           const updatedReplies = await this.model.getReplies(commentId);
           await this.view.renderReplies(updatedReplies);
         }
-      } catch (e) {
-        console.log(e);
+      } catch (errors) {
+        console.log(errors);
+        this.showResult({
+          title: errors.exception[0],
+          text: 'Click the button to close',
+          icon: 'error'
+        });
       }
     });
 
@@ -299,8 +318,12 @@ export class BlogContr {
         console.log(result);
         const updatedReplies = await this.model.getReplies(commentId);
         await this.view.renderReplies(updatedReplies);
-      } catch (e) {
-        console.log(e);
+      } catch (errors) {
+        this.showResult({
+          title: errors.updatedReply[0] || errors.replyId[0] || errors.exception[0],
+          text: 'Click the button to close',
+          icon: 'error'
+        });
       }
     });
 
@@ -317,8 +340,11 @@ export class BlogContr {
 
               await this.view.updateRepliesCount({ isDelete: true, commentId: deleteData.commentId });
             } catch (errors) {
-              console.log(errors);
-              return;
+              this.showResult({
+                title: errors.exception[0],
+                text: 'Click the button to close',
+                icon: 'error'
+              });
             }
           }
         });
